@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 class cube:
     def __init__(self, dim):
@@ -12,18 +13,19 @@ class cube:
         self.faces = np.asarray(self.faces)
 
     def turn(self, f, depth, direction):
-        copy = self.faces.view()
+        cpy = copy.deepcopy(self.faces)
 
         if depth <= self.s / 2 and depth > 0:
-            for i in range(dim):
-                for j in range(dim):
-                    self.faces[f][i][j] = copy[f][j][self.s - i - 1] if direction == 1 else copy[f][self.s - j - 1][i] # turns the face, itself (effect of depth = 0)
+            for i in range(self.s):
+                for j in range(self.s):
+                    self.faces[f].arr[i, j] = cpy[f].arr[j, self.s - i - 1] if direction == 1 else cpy[f].arr[self.s - j - 1, i] # turns the face, itself (effect of depth = 0)
             for i in range(4):
                 if f == 0:
+                    print(i)
                     if direction == 1:
-                        self.faces[self.swaps[f][i]][:][:depth] = self.faces[self.swaps[f][i+1 if i+1 <= 4 else 0]][:depth]
+                        self.faces[self.swaps[f][i]].arr[:, :depth] = cpy[self.swaps[f][i+1 if i+1 < 4 else 0]].arr[:, :depth]
                     else:
-                        self.faces[self.swaps[f][4-i-1]][:][:depth] = self.faces[self.swaps[f][4-i-1 if 4-i-1 >= 0 else 4]][:depth]
+                        self.faces[self.swaps[f][3-i]].arr[:, :depth] = cpy[self.swaps[f][3-i-1 if 3-i-1 >= 0 else 3]].arr[:, :depth]
                 elif f == 1:
                     pass
 
@@ -57,4 +59,8 @@ class cubie:
 
 if __name__ == '__main__':
     c = cube(3)
+    print(c)
+    c.turn(0, 1, 1)
+    print(c)
+    c.turn(0, 1, -1)
     print(c)
