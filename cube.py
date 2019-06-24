@@ -27,12 +27,18 @@ class cube:
                 elif f == 1:
                     pass
 
-    def __print__(self):
-        for face in self.faces:
-            print(face)
+    def __str__(self):
+        val = ''
+
+        for f in self.faces:
+            for i in range(self.s):
+                for j in range(self.s):
+                    # print(f.arr[i, j].color)
+                    val = val + str(f.arr[i, j].color)
+
+        return val
 
 class face:
-
     def __init__(self, dim, color):
         self.arr = []
         self.s = dim
@@ -40,7 +46,10 @@ class face:
             self.arr.append([])
 
         for i in range(self.s):
-            self.arr[i].append(cubie(color))
+            for j in range(self.s):
+                self.arr[i].append(cubie(color))
+
+        self.arr = np.asarray(self.arr)
 
 class cubie:
     def __init__(self, c):
